@@ -1,12 +1,14 @@
 import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
-import { UpdateUserDto } from './dtos/update-user-dto';
+import { UpdateUserDto } from './dtos/user-dto';
+import { Serialize } from 'src/interceptors/passwordSerialize';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Serialize(UpdateUserDto)
   @Get()
   async getAllUsers(): Promise<User[]> {
     return await this.userService.getAllUsers();
@@ -14,9 +16,7 @@ export class UserController {
 
   @Get('/:id')
   async getUserById(@Param('id') id: string): Promise<User> {
-    const nome = this.userService.getUserById(parseInt(id));
-    console.log(nome);
-    return nome;
+    return this.userService.getUserById(parseInt(id));
   }
 
   @Patch('/:id')
