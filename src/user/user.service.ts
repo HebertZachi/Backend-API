@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/user-dto';
 import { UpdateUserDto } from './dtos/user-dto';
 import * as bcrypt from 'bcrypt';
+import { take } from 'rxjs';
 
 @Injectable()
 export class UserService {
@@ -12,8 +13,8 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  getAllUsers(): Promise<User[]> {
-    const user = this.userRepository.find();
+  async getAllUsers(): Promise<User[]> {
+    const [user] = await this.userRepository.findAndCount({});
     return user;
   }
 
